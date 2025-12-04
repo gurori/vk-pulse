@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -38,5 +40,104 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Mobile first */
+.container {
+  max-width: 100%;
+}
+
+/* ≥ 480px */
+@media (min-width: 480px) {
+  .container {
+    max-width: 440px;
+  }
+}
+
+/* ≥ 768px */
+@media (min-width: 768px) {
+  .container {
+    max-width: 680px;
+  }
+}
+
+/* ≥ 1024px */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 880px;
+  }
+}
+
+/* ≥ 1280px */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1120px;
+  }
+}
+
+/* ≥ 1440px */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1240px;
+  }
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 48px 16px;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+/* Левая часть */
+.hero__content {
+  flex: 1 1 320px;
+  max-width: 500px;
+}
+
+.hero__title {
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.hero__description {
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+/* Правая часть — адаптивное лого */
+.hero__logo-wrapper {
+  flex: 1 1 260px;
+  display: flex;
+  justify-content: center;
+}
+
+.hero__logo {
+  width: 100%;
+  max-width: 378px;
+
+  /* регулируем размер ImageBase */
+  --vkui_internal--image-base-size: 100%;
+}
+
+/* 📱 Мобильная адаптация */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero__content {
+    max-width: 100%;
   }
 }

@@ -1,0 +1,4 @@
+.logo {
+  position: relative;
+  width: clamp(100px, 50%, 378px);
+}
