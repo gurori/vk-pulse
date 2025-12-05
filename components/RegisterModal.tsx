@@ -95,7 +95,7 @@ export default function RegisterModal({
           loading={isSubmitting}
           type="submit"
         >
-          Зарегистрироваться
+          Далее
         </Button>
         <Button size="l" stretched mode="tertiary" onClick={onSwitch}>
           Войти

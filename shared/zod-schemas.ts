@@ -19,14 +19,14 @@ export const nameSchema = z
   .max(50, "Введите не более 50 символов")
   .regex(
     /^[a-zA-Zа-яА-Я\s-]+$/,
-    "ФИО должно содержать только буквы, пробелы и дефисы"
+    "Имя должно содержать только буквы, пробелы и дефисы"
   );
 
 export const textSchema = z.string().min(3, "Введите не менее 3 символов");
 
 export const mdTextSchema = textSchema.max(
-  300,
-  "Введите не более 300 символов"
+  1000,
+  "Введите не более 1000 символов"
 );
 
 export const smTextSchema = textSchema.max(64, "Введите не более 64 символов");
@@ -68,10 +68,17 @@ export const imageSchema = fileSchema.refine(
 
 export const roleSchema = z.string({ message: "Необходимо выбрать 1 роль" });
 
-export const dateSchema = z.date({ error: "Выберите дату" });
+export const dateSchema = z
+  .string()
+  .refine((v) => !Number.isNaN(Date.parse(v)), "Некорректная дата");
 
 export const priceSchema = z.coerce
   .number({ error: "Введите число" })
   .min(50, "Введите не менее 50₽")
   .max(10000000, "Введите не более 10,000,000₽")
   .step(0.01, "Максимум 2 десятичных знака");
+
+export const scoreSchema = z
+  .number()
+  .int()
+  .min(0, "Баллы не могут быть отрицательными");

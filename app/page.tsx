@@ -1,8 +1,8 @@
 import {
   Box,
   Button,
-  ButtonGroup,
   Caption,
+  DisplayTitle,
   Flex,
   Title,
 } from "@vkontakte/vkui";
@@ -10,7 +10,7 @@ import s from "./page.module.css";
 import Image from "next/image";
 import AuthModals from "@/components/AuthModals";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       <Box className="container" paddingBlock={20}>
@@ -25,10 +25,10 @@ export default function Home() {
             className="max-w-xl grid gap-4 justify-items-start"
             paddingBlock={100}
           >
-            <Title>
+            <DisplayTitle>
               Сделайте совместную работу более структурированной, прозрачной и
               удобной в VK WorkSpace Pulse
-            </Title>
+            </DisplayTitle>
             <Caption>
               Отслеживание прогресса команды, создание задач по диаграмме Ганта,
               карточка сотрудника.
