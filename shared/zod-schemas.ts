@@ -69,7 +69,7 @@ export const imageSchema = fileSchema.refine(
 export const roleSchema = z.string({ message: "Необходимо выбрать 1 роль" });
 
 export const dateSchema = z
-  .string()
+  .string("Некорректная дата")
   .refine((v) => !Number.isNaN(Date.parse(v)), "Некорректная дата");
 
 export const priceSchema = z.coerce
@@ -79,6 +79,6 @@ export const priceSchema = z.coerce
   .step(0.01, "Максимум 2 десятичных знака");
 
 export const scoreSchema = z
-  .number()
-  .int()
+  .number("Введите число")
+  .int("Введите целое число")
   .min(0, "Баллы не могут быть отрицательными");

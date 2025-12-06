@@ -150,3 +150,54 @@ a {
 
   background: #d9d9d9;
 }
+
+.def-logo-sm {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 100%;
+
+  background: #d9d9d9;
+}
+
+.shadow {
+  filter: drop-shadow(1px 4px 13.6px rgba(0, 0, 0, 0.19));
+}
+
+.task {
+  width: 100%;
+
+  padding: 18px 18px 18px 57px;
+
+  background: #ffffff;
+  border-radius: 11px;
+}
+
+.task-completed {
+  height: 30px;
+
+  padding: 4px 20px;
+
+  background: #a8ffa2;
+  border-radius: 24px;
+}
+
+.task-not-completed {
+  height: 30px;
+
+  padding: 4px 20px;
+
+  background: #d9d9d9;
+  border-radius: 24px;
+}
+
+.score-bg {
+  box-sizing: border-box;
+
+  width: 207px;
+  height: 77px;
+
+  background: #0077ff;
+  border: 4px dashed #ffffff;
+  border-radius: 22px;
+}

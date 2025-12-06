@@ -10,9 +10,9 @@ import Link from "next/link";
 
 export default function SidePanel() {
   return (
-    <Box padding={26}>
+    <Box padding={26} className="min-h-screen h-[1500px] bg-[#F6F7F8]">
       <Link href="/">
-        <Flex gap={20} align="center">
+        <Flex noWrap gap={20} align="center">
           <Image
             src="/logos/pulse/main.svg"
             alt="logo"
@@ -25,25 +25,25 @@ export default function SidePanel() {
       <Box paddingBlock={30}>
         <Flex direction="column" gap={36}>
           <Link href="/profile">
-            <Flex gap={12} align="center">
+            <Flex noWrap gap={12} align="center">
               <UserPenIcon />
               <Title level="2">Профиль</Title>
             </Flex>
           </Link>
           <Link href="/chart">
-            <Flex gap={12} align="center">
+            <Flex noWrap gap={12} align="center">
               <ChartNoAxesCombinedIcon />
               <Title level="2">Диаграмма</Title>
             </Flex>
           </Link>
           <Link href="/tasks">
-            <Flex gap={12} align="center">
+            <Flex noWrap gap={12} align="center">
               <BookCheckIcon />
               <Title level="2">Задачи</Title>
             </Flex>
           </Link>
           <Link href="/">
-            <Flex gap={12} align="center">
+            <Flex noWrap gap={12} align="center">
               <UsersIcon />
               <Title level="2">Пользователи</Title>
             </Flex>

@@ -51,7 +51,9 @@ export default function LoginModal({
         return;
       }
       const token = await res.text();
-      setCookie("auth", token);
+      const maxAge = 14 * 24 * 60 * 60;
+
+      setCookie("auth", token, { maxAge });
       onSuccess?.();
     } catch (err) {
       console.log(err);

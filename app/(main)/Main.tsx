@@ -9,7 +9,11 @@ export default function Main({
   title: string;
 }) {
   return (
-    <Flex direction="column" gap={32}>
+    <Flex
+      direction="column"
+      gap={32}
+      className="w-full justify-items-start content-start"
+    >
       <DisplayTitle>{title}</DisplayTitle>
       {children}
     </Flex>

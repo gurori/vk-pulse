@@ -2,21 +2,7 @@
 
 import React, { useMemo } from "react";
 import styles from "./GanttChart.module.css";
-
-export interface User {
-  id: string;
-  name: string;
-}
-
-export interface Task {
-  id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  actualStartDate: string;
-  actualEndDate: string;
-  receiver?: User | null;
-}
+import type { Task } from "@/shared/types/models";
 
 type Props = {
   tasks: Task[];
@@ -24,11 +10,27 @@ type Props = {
   timelineEnd?: string;
 };
 
-function toDayNumber(iso: string) {
+/** Парсит ISO дату и возвращает номер дня (UTC days since epoch) или null если дата некорректна/пустая */
+function toDayNumberSafe(iso?: string | null): number | null {
+  if (!iso) return null;
+
+  // guard: some backends send '0001-01-01T00:00:00' to mean "not set"
+  if (iso.startsWith("0001-") || iso.startsWith("0000-")) return null;
+
   const d = new Date(iso);
-  return (
+  if (isNaN(d.getTime())) return null;
+
+  const y = d.getUTCFullYear();
+  // treat very old years as "not set"
+  if (y < 1900) return null;
+
+  return Math.floor(
     Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) / 86400000
   );
+}
+
+function fromDayNumber(dayNum: number) {
+  return new Date(dayNum * 86400000);
 }
 
 export const GanttTable: React.FC<Props> = ({
@@ -40,32 +42,54 @@ export const GanttTable: React.FC<Props> = ({
     let minDay = Infinity;
     let maxDay = -Infinity;
 
+    // collect valid day numbers
     tasks.forEach((t) => {
-      [t.startDate, t.endDate, t.actualStartDate, t.actualEndDate].forEach(
-        (iso) => {
-          const d = toDayNumber(iso);
-          if (d < minDay) minDay = d;
-          if (d > maxDay) maxDay = d;
-        }
-      );
+      const candidates = [
+        toDayNumberSafe(t.startDate),
+        toDayNumberSafe(t.endDate),
+        toDayNumberSafe(t.actualStartDate),
+        toDayNumberSafe(t.actualEndDate),
+      ];
+
+      candidates.forEach((dn) => {
+        if (dn === null) return;
+        if (dn < minDay) minDay = dn;
+        if (dn > maxDay) maxDay = dn;
+      });
     });
 
-    if (timelineStart) minDay = Math.min(minDay, toDayNumber(timelineStart));
-    if (timelineEnd) maxDay = Math.max(maxDay, toDayNumber(timelineEnd));
+    // include timeline overrides (if provided and valid)
+    const ts = toDayNumberSafe(timelineStart ?? null);
+    const te = toDayNumberSafe(timelineEnd ?? null);
+    if (ts !== null && ts < minDay) minDay = ts;
+    if (te !== null && te > maxDay) maxDay = te;
 
+    // if nothing valid, fallback to today week
+    if (!isFinite(minDay) || !isFinite(maxDay)) {
+      const today = Math.floor(
+        Date.UTC(
+          new Date().getUTCFullYear(),
+          new Date().getUTCMonth(),
+          new Date().getUTCDate()
+        ) / 86400000
+      );
+      minDay = today - 3;
+      maxDay = today + 7;
+    }
+
+    // breathing room
     minDay -= 1;
     maxDay += 1;
 
-    const days = [];
+    const daysArr: { dayNum: number; label: string }[] = [];
     for (let d = minDay; d <= maxDay; d++) {
-      const date = new Date(d * 86400000);
-      days.push({
-        dayNum: d,
-        label: `${date.getUTCDate()}.${date.getUTCMonth() + 1}`,
-      });
+      const date = fromDayNumber(d);
+      const day = date.getUTCDate().toString().padStart(2, "0");
+      const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+      daysArr.push({ dayNum: d, label: `${day}.${month}` });
     }
 
-    return { start: minDay, end: maxDay, days };
+    return { start: minDay, end: maxDay, days: daysArr };
   }, [tasks, timelineStart, timelineEnd]);
 
   return (
@@ -84,23 +108,31 @@ export const GanttTable: React.FC<Props> = ({
 
         <tbody>
           {tasks.map((task) => {
-            const planStart = toDayNumber(task.startDate);
-            const planEnd = toDayNumber(task.endDate);
-            const factStart = toDayNumber(task.actualStartDate);
-            const factEnd = toDayNumber(task.actualEndDate);
+            const planStart = toDayNumberSafe(task.startDate);
+            const planEnd = toDayNumberSafe(task.endDate);
+            const factStart = toDayNumberSafe(task.actualStartDate);
+            const factEnd = toDayNumberSafe(task.actualEndDate);
 
             return (
               <tr key={task.id}>
                 <td className={styles.nameCell}>
                   <div className={styles.taskName}>{task.name}</div>
                   <div className={styles.taskSub}>
-                    {task.receiver?.name ?? "—"}
+                    {task.creator?.name ?? "—"}
                   </div>
                 </td>
 
                 {days.map((d) => {
-                  const inPlan = d.dayNum >= planStart && d.dayNum <= planEnd;
-                  const inFact = d.dayNum >= factStart && d.dayNum <= factEnd;
+                  const inPlan =
+                    planStart !== null &&
+                    planEnd !== null &&
+                    d.dayNum >= planStart &&
+                    d.dayNum <= planEnd;
+                  const inFact =
+                    factStart !== null &&
+                    factEnd !== null &&
+                    d.dayNum >= factStart &&
+                    d.dayNum <= factEnd;
 
                   return (
                     <td key={d.dayNum} className={styles.dayCell}>

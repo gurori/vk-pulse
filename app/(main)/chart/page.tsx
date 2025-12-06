@@ -1,49 +1,45 @@
-import GanttChart, { Task } from "@/components/GanttChart/GanttChart";
+import GanttChart from "@/components/GanttChart/GanttChart";
 import Main from "../Main";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import apiFetch from "@/services/apiFetch";
+import { Task } from "@/shared/types/models";
+import { Flex, Headline } from "@vkontakte/vkui";
+import s from "@/components/GanttChart/GanttChart.module.css";
 
-const sample: Task[] = [
-  {
-    id: "1",
-    name: "Подготовка ТЗ",
-    //description: "Сбор требований и согласование",
-    //isCompleted: true,
-    //score: 5,
-    startDate: "2025-11-01",
-    endDate: "2025-11-07",
-    actualStartDate: "2025-11-01",
-    actualEndDate: "2025-11-06",
-    receiver: { id: "u1", name: "Анна" },
-  },
-  {
-    id: "2",
-    name: "Дизайн",
-    // description: "Макеты и правки",
-    // isCompleted: true,
-    // score: 8,
-    startDate: "2025-11-08",
-    endDate: "2025-11-18",
-    actualStartDate: "2025-11-10",
-    actualEndDate: "2025-11-20",
-    receiver: { id: "u2", name: "Иван" },
-  },
-  {
-    id: "3",
-    name: "Разработка",
-    // description: "Frontend + Backend",
-    // isCompleted: false,
-    // score: 13,
-    startDate: "2025-11-19",
-    endDate: "2025-12-10",
-    actualStartDate: "2025-11-22",
-    actualEndDate: "2025-12-02",
-    receiver: { id: "u3", name: "Мария" },
-  },
-];
+export default async function ChartPage() {
+  const token = (await cookies()).get("auth");
+  if (!token) redirect("/");
 
-export default function Page() {
+  const res = await apiFetch("/tasks", {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token.value}`,
+    },
+  });
+  if (!res.ok) {
+    redirect("/");
+  }
+  const tasks: Task[] = await res.json();
+  console.log(tasks);
+
   return (
     <Main title="Диаграмма Ганта">
-      <GanttChart tasks={sample} />
+      <Flex gap={4}>
+        <div className="relative w-8 mb-8">
+          <span className={s.fact} style={{ top: 1 }}></span>
+        </div>
+        <Headline> - план</Headline>
+      </Flex>
+      <Flex gap={4}>
+        <div className="relative w-8 mb-8">
+          <span className={s.plan} style={{ top: 1 }}></span>
+        </div>
+        <Headline> - факт</Headline>
+      </Flex>
+      <GanttChart tasks={tasks} />
     </Main>
   );
 }

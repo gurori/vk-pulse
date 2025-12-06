@@ -133,7 +133,7 @@ export default function CreateTaskModal({
               >
                 <Input
                   value={startDateField.value}
-                  onChange={startDateField.onChange}
+                  onChange={(e) => startDateField.onChange(e.target.value)}
                   type="date"
                 />
               </FormItem>
@@ -146,7 +146,7 @@ export default function CreateTaskModal({
               >
                 <Input
                   value={endDateField.value}
-                  onChange={endDateField.onChange}
+                  onChange={(e) => endDateField.onChange(e.target.value)}
                   type="date"
                 />
               </FormItem>

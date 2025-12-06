@@ -8,7 +8,8 @@ export interface Task {
   endDate: string;
   actualStartDate: string;
   actualEndDate: string;
-  receiver?: User | null;
+  creator: User | null;
+  receiver: User | null;
 }
 
 export interface Team {
@@ -27,8 +28,7 @@ export interface User {
   score: number;
   team?: Team | null;
   position?: Position | null;
-  completedTasks: Task[];
-  inProcessTasks: Task[];
+  tasks: Task[];
 }
 
 export interface Position {

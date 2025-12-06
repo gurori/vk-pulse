@@ -8,9 +8,15 @@ export default function MainLayout({
   children: ReactNode;
 }>) {
   return (
-    <Flex>
+    <Flex noWrap>
       <SidePanel />
-      <Box padding={60}>{children}</Box>
+      <Box
+        className="w-full grid justify-items-start"
+        paddingInline={60}
+        paddingBlock={32}
+      >
+        {children}
+      </Box>
     </Flex>
   );
 }

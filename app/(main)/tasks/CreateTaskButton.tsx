@@ -9,7 +9,7 @@ export default function CreateTaskButton({ token }: { token: string }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button size="l" onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} className="self-start">
         <Flex justify="space-around" gap={8}>
           <Text>Создать</Text>
           <PlusIcon />
